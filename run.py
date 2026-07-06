@@ -99,7 +99,7 @@ quality_map = {'Ex': 5, 'Gd': 4, 'TA': 3, 'Fa': 2, 'Po': 1, 'None': 0,
 
 ordinal_quality_cols = ['ExterQual', 'ExterCond', 'BsmtQual', 'BsmtCond',
                          'HeatingQC', 'KitchenQual', 'FireplaceQu', 'GarageQual',
-                         'GarageCond', 'PoolQC', 'Fence']
+                         'GarageCond', 'PoolQC']  # 不含 Fence（围栏类型非质量评级）
 
 for col in ordinal_quality_cols:
     if col in all_data.columns:
@@ -123,7 +123,7 @@ mi_scores = mutual_info_regression(X, y, random_state=42)
 mi_selected = X.columns[mi_scores > 0.01].tolist()
 
 rf_for_rfecv = RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1)
-rfecv = RFECV(rf_for_rfecv, step=1, cv=3, scoring='neg_root_mean_squared_error', n_jobs=-1)
+rfecv = RFECV(rf_for_rfecv, step=5, cv=3, scoring='neg_root_mean_squared_error', n_jobs=-1)
 rfecv.fit(X, y)
 rfecv_selected = X.columns[rfecv.support_].tolist()
 
