@@ -55,6 +55,19 @@ all_data['LotFrontage'] = all_data.groupby('Neighborhood')['LotFrontage'].transf
 all_data['LotFrontage'] = all_data['LotFrontage'].fillna(all_data['LotFrontage'].median())
 all_data['Electrical'] = all_data['Electrical'].fillna(all_data['Electrical'].mode()[0])
 
+# 测试集独有缺失
+extra_na_fill_mode = {
+    'MSZoning': 'RL', 'Utilities': 'AllPub', 'Exterior1st': 'VinylSd',
+    'Exterior2nd': 'VinylSd', 'KitchenQual': 'TA', 'Functional': 'Typ', 'SaleType': 'WD',
+}
+for col, fill_val in extra_na_fill_mode.items():
+    all_data[col] = all_data[col].fillna(fill_val)
+
+extra_na_zero = ['BsmtFinSF1', 'BsmtFinSF2', 'BsmtUnfSF', 'TotalBsmtSF',
+                 'BsmtFullBath', 'BsmtHalfBath', 'GarageCars', 'GarageArea']
+for col in extra_na_zero:
+    all_data[col] = all_data[col].fillna(0)
+
 # Binary flags
 all_data['has_garage'] = (all_data['GarageType'] != 'No_Garage').astype(int)
 all_data['has_basement'] = (all_data['BsmtQual'] != 'No_Basement').astype(int)
@@ -71,7 +84,7 @@ all_data['TotalSF'] = (all_data['GrLivArea'] + all_data['TotalBsmtSF'] +
 all_data['HouseAge'] = all_data['YrSold'] - all_data['YearBuilt']
 all_data['RemodAge'] = all_data['YrSold'] - all_data['YearRemodAdd']
 all_data['PorchSF'] = (all_data['OpenPorchSF'] + all_data['EnclosedPorch'] +
-                       all_data['X3SsnPorch'] + all_data['ScreenPorch'])
+                       all_data['3SsnPorch'] + all_data['ScreenPorch'])
 all_data['OverallScore'] = all_data['OverallQual'] * all_data['OverallCond']
 all_data['WasRemodeled'] = (all_data['YearBuilt'] != all_data['YearRemodAdd']).astype(int)
 all_data['GarageAge'] = all_data['YrSold'] - all_data['GarageYrBlt']
