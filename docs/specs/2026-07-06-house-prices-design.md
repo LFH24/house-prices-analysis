@@ -99,11 +99,11 @@ NA 语义分析 → 编码策略分模型对比实验 → MI + RFECV（并集）
 
 新增高 ROI 特征（审核补充）：
 - `WasRemodeled` = (YearBuilt ≠ YearRemodAdd).astype(int) — 是否翻新过
-- `GarageAge` = YrSold − GarageYrBlt（填 0 的用 HouseAge 替代或保留配合 flag）
-- `LogTotalSF` = np.log1p(TotalSF) — 面积的 log 变换，更接近正态
+- `GarageAge` = YrSold − GarageYrBlt — 车库年龄。**NA 处理**：无车库时 GarageYrBlt 先在缺失值填充阶段填 0，但计算 GarageAge 后会得到一个无意义的大值（如 2008）。对此类样本（has_garage=0），强制将 GarageAge 填 0，模型通过 has_garage flag 学到"无车库时 GarageAge 不重要"。
+- `LogTotalSF` = np.log1p(TotalSF) — 面积的 log 变换，更接近正态。**与 TotalSF 的关系**：线性模型用 LogTotalSF **替代** TotalSF（log 变换后更接近正态满足线性假设），树模型**两者都保留**让模型自动选择分裂特征。
 - `Qual_x_SF` = OverallQual × GrLivArea — 品质与面积的交互
 
-⚠️ **共线性处理**：`TotalSF` 与 `GrLivArea`、`TotalBsmtSF` 高度共线。线性模型使用 `TotalSF` **替代**其组成部分，树模型可同时保留两者（树模型对共线不敏感，但分裂效率受影响）。在编码对比实验中验证哪种方式更好。
+⚠️ **共线性处理**：`TotalSF` 与 `GrLivArea`、`TotalBsmtSF` 高度共线。线性模型使用 `TotalSF` **替代**其组成部分，树模型可同时保留两者（树模型对共线不敏感，但分裂效率受影响）。LogTotalSF 遵循同样策略：线性模型用 LogTotalSF 替代 TotalSF，树模型两者共存。在编码对比实验中验证哪种方式更好。
 
 **3.3 类别编码对比实验（修订：分模型裁判）**
 
@@ -134,6 +134,7 @@ NA 语义分析 → 编码策略分模型对比实验 → MI + RFECV（并集）
 - **RFECV（RF estimator）**：用 RF 特征重要性做递归消除
 - **Lasso L1 正则**：观察零系数特征 → 如果 MI/RFECV 排名靠前但 Lasso 系数为零，说明可能是非线性特征，保留
 - **最终策略**：**MI 和 RFECV 取并集，Lasso 做 sanity check**（不取交集——太激进会丢非线性特征）。训练集仅 1460 条，特征宁多勿少，树模型自带特征选择能力。
+- **CatBoost 不参与 3.4 的特征筛选流程**：CatBoost 走原生路径，输入全量特征（含原始类别列），靠内部 L2 正则化 + depth-based regularization 自动处理。调参后 CatBoost 的 feature importance 可事后用来交叉验证其他模型的筛选结果是否一致。
 
 **3.5 数据预处理管道（修订：双 Pipeline）**
 
