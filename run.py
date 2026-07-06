@@ -11,7 +11,6 @@ from sklearn.ensemble import RandomForestRegressor, StackingRegressor
 from sklearn.feature_selection import mutual_info_regression, RFECV
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
-import category_encoders as ce
 from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 from catboost import CatBoostRegressor

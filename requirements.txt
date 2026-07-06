@@ -7,6 +7,5 @@ xgboost>=2.0
 lightgbm>=4.0
 catboost>=1.2
 optuna>=3.0
-category_encoders>=2.0
 scipy>=1.10
 jupyter>=1.0
