@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output (all generated files)
+output/
+
+# Data (raw data shouldn't be in git)
+data/train.csv
+data/test.csv
+data/sample_submission.csv
+
+# Skills (local dev artifacts)
+.agents/
+skills-lock.json
+
+# Misc
+*.log
