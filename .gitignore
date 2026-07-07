@@ -32,5 +32,8 @@ data/sample_submission.csv
 .agents/
 skills-lock.json
 
+# CatBoost training artifacts
+catboost_info/
+
 # Misc
 *.log
